@@ -22,6 +22,7 @@
 
 from pySim.commands import SimCardCommands
 from pySim.transport.serial import SerialSimLink
+from pySim.utils import h2b, swap_nibbles, rpad, dec_imsi, dec_iccid
 
 class Reader():
     """
@@ -32,18 +33,46 @@ class Reader():
     def __init__(self, device, baudrate):
 	sl = SerialSimLink(device=device, baudrate=baudrate)
 
-        # Create command layer
-        scc = SimCardCommands(transport=sl)
+        # create command layer
+        self.scc = SimCardCommands(transport=sl)
 
-        # Wait for SIM card
+        # wait for SIM card
+        print("[Reader] Waiting for SIM card ...")
         sl.wait_for_card()
 
         # Program the card
         print("Reading ...")
+
+    def get_iccid(self):
+	# EF.ICCID
+	(res, sw) = self.scc.read_binary(['3f00', '2fe2'])
+	if sw == '9000':
+		print("[Reader] ICCID: %s" % (dec_iccid(res),))
+	else:
+		print("[Reader] ICCID: Can't read, response code = %s" % (sw,))
+
+    def get_imsi(self):
+	# EF.IMSI
+	(res, sw) = self.scc.read_binary(['3f00', '7f20', '6f07'])
+	if sw == '9000':
+		print("[Reader] IMSI: %s" % (dec_imsi(res),))
+	else:
+		print("[Reader] IMSI: Can't read, response code = %s" % (sw,))
+
+    def get_smsp(self):
+	# EF.SMSP
+	(res, sw) = self.scc.read_record(['3f00', '7f10', '6f42'], 1)
+	if sw == '9000':
+		print("[Reader] SMSP: %s" % (res,))
+	else:
+		print("[Reader] SMSP: Can't read, response code = %s" % (sw,))
 
 
 if __name__ == '__main__':
     device="/dev/ttyUSB0"
     baudrate = 9600
     reader = Reader(device, baudrate)
+    reader.get_iccid()
+    reader.get_imsi()
+    reader.get_smsp()
 
