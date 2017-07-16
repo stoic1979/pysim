@@ -24,11 +24,11 @@ from pySim.commands import SimCardCommands
 from pySim.transport.serial import SerialSimLink
 from pySim.utils import h2b, swap_nibbles, rpad, dec_imsi, dec_iccid
 
+
 class Reader():
     """
     Multipurpose reader class inspired from pySIm's reader
     """
-
 
     def __init__(self, device, baudrate):
 	sl = SerialSimLink(device=device, baudrate=baudrate)
@@ -41,7 +41,7 @@ class Reader():
         sl.wait_for_card()
 
         # Program the card
-        print("Reading ...")
+        print("[Reader] Reading SIM card ...")
 
     def get_iccid(self):
 	# EF.ICCID
@@ -67,6 +67,29 @@ class Reader():
 	else:
 		print("[Reader] SMSP: Can't read, response code = %s" % (sw,))
 
+    def get_acc(self):
+	# EF.ACC
+	(res, sw) = self.scc.read_binary(['3f00', '7f20', '6f78'])
+	if sw == '9000':
+		print("[Reader] ACC: %s" % (res,))
+	else:
+		print("[Reader] ACC: Can't read, response code = %s" % (sw,))
+
+    def get_msisdn(self):
+	# EF.MSISDN
+	try:
+	#	print(scc.record_size(['3f00', '7f10', '6f40']))
+		(res, sw) = self.scc.read_record(['3f00', '7f10', '6f40'], 1)
+		if sw == '9000':
+			if res[1] != 'f':
+				print("[Reader] MSISDN: %s" % (res,))
+			else:
+				print("[Reader] MSISDN: Not available")
+		else:
+			print("[Reader] MSISDN: Can't read, response code = %s" % (sw,))
+	except:
+		print "[Reader] MSISDN: Can't read. Probably not existing file"
+
 
 if __name__ == '__main__':
     device="/dev/ttyUSB0"
@@ -75,4 +98,8 @@ if __name__ == '__main__':
     reader.get_iccid()
     reader.get_imsi()
     reader.get_smsp()
+    reader.get_acc()
+    reader.get_msisdn()
+
+
 
