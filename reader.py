@@ -24,6 +24,8 @@ from pySim.commands import SimCardCommands
 from pySim.transport.serial import SerialSimLink
 from pySim.utils import h2b, swap_nibbles, rpad, dec_imsi, dec_iccid
 
+from constants import *
+
 
 class Reader():
     """
@@ -47,8 +49,7 @@ class Reader():
 
     def get_iccid(self):
 	# EF.ICCID
-	(res, sw) = self.scc.read_binary(['3f00', '2fe2'])
-        print ("res:", res)
+	(res, sw) = self.scc.read_binary([MF, '2fe2'])
 	if sw == '9000':
 	    print("[Reader] ICCID: %s" % (dec_iccid(res),))
 	else:
@@ -56,7 +57,7 @@ class Reader():
 
     def get_imsi(self):
 	# EF.IMSI
-	(res, sw) = self.scc.read_binary(['3f00', '7f20', '6f07'])
+	(res, sw) = self.scc.read_binary([MF, '7f20', '6f07'])
 	if sw == '9000':
 	    print("[Reader] IMSI: %s" % (dec_imsi(res),))
 	else:
@@ -64,7 +65,7 @@ class Reader():
 
     def get_smsp(self):
 	# EF.SMSP
-	(res, sw) = self.scc.read_record(['3f00', '7f10', '6f42'], 1)
+	(res, sw) = self.scc.read_record([MF, '7f10', '6f42'], 1)
 	if sw == '9000':
 	    print("[Reader] SMSP: %s" % (res,))
 	else:
@@ -72,7 +73,7 @@ class Reader():
 
     def get_acc(self):
 	# EF.ACC
-	(res, sw) = self.scc.read_binary(['3f00', '7f20', '6f78'])
+	(res, sw) = self.scc.read_binary([MF, '7f20', '6f78'])
 	if sw == '9000':
 	    print("[Reader] ACC: %s" % (res,))
 	else:
@@ -81,7 +82,7 @@ class Reader():
     def get_msisdn(self):
 	# EF.MSISDN
 	try:
-	    (res, sw) = self.scc.read_record(['3f00', '7f10', '6f40'], 1)
+	    (res, sw) = self.scc.read_record([MF, '7f10', '6f40'], 1)
 	    if sw == '9000':
 		if res[1] != 'f':
 		    print("[Reader] MSISDN: %s" % (res,))
@@ -96,7 +97,7 @@ class Reader():
     # FIXME
     def get_uid(self):
 	try:
-	    (res, sw) = self.scc.read_record(['ca00', '0000'], 1)
+	    (res, sw) = self.scc.read_record([MF, '0000'], 1)
 	    if sw == '9000':
 		if res[1] != 'f':
 		    print("[Reader] UID: %s" % (res,))
@@ -117,7 +118,7 @@ class Reader():
         for the UICC, in order of priority. 
         """
 	# EF.PL
-	(res, sw) = self.scc.read_binary(['3f00', '2f05'])
+	(res, sw) = self.scc.read_binary([MF, '2f05'])
 	if sw == '9000':
 	    print("[Reader] PL: %s" % (dec_iccid(res),))
 	else:
@@ -134,7 +135,7 @@ class Reader():
         The second possibility allows the usage of different access rules in different security environments. 
         """
 	# EF.ARR
-	(res, sw) = self.scc.read_binary(['3f00', '2fe6'])
+	(res, sw) = self.scc.read_binary([MF, '2fe6'])
 	if sw == '9000':
 	    print("[Reader] ARR: %s" % (dec_iccid(res),))
 	else:
@@ -153,7 +154,7 @@ class Reader():
         These application identifiers are used to select the application. 
         """
 	# EF.DIR
-	(res, sw) = self.scc.read_binary(['3f00', '2f00'])
+	(res, sw) = self.scc.read_binary([MF, '2f00'])
 	if sw == '9000':
 	    print("[Reader] DIR: %s" % (dec_iccid(res),))
 	else:
@@ -168,7 +169,7 @@ class Reader():
         
         """
 	# EF.USIM
-	(res, sw) = self.scc.read_binary(['3f00', '6f05'])
+	(res, sw) = self.scc.read_binary([MF, '6f05'])
 	if sw == '9000':
 	    print("[Reader] USIM: %s" % (dec_iccid(res),))
 	else:
@@ -181,17 +182,17 @@ if __name__ == '__main__':
     baudrate = 9600
     reader = Reader(device, baudrate)
 
-    # reader.get_iccid()
-    # reader.get_imsi()
-    # reader.get_smsp()
-    # reader.get_acc()
-    # reader.get_msisdn()
+    reader.get_iccid()
+    reader.get_imsi()
+    reader.get_smsp()
+    reader.get_acc()
+    reader.get_msisdn()
     # reader.get_uid()
     # reader.get_pl()
     # reader.get_arr()
     # reader.get_dir()
 
-    reader.get_usim()
+    #reader.get_usim()
 
 
 
