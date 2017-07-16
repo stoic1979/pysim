@@ -160,6 +160,21 @@ class Reader():
 	    print("[Reader] DIR: Can't read, response code = %s" % (sw,))
 
 
+    # FIXME - it crashes
+    def get_usim(self):
+        """
+        Universal Subscriber Identity Module
+
+        
+        """
+	# EF.USIM
+	(res, sw) = self.scc.read_binary(['3f00', '6f05'])
+	if sw == '9000':
+	    print("[Reader] USIM: %s" % (dec_iccid(res),))
+	else:
+	    print("[Reader] USIM: Can't read, response code = %s" % (sw,))
+
+
 
 if __name__ == '__main__':
     device="/dev/ttyUSB0"
@@ -174,7 +189,9 @@ if __name__ == '__main__':
     # reader.get_uid()
     # reader.get_pl()
     # reader.get_arr()
-    reader.get_dir()
+    # reader.get_dir()
+
+    reader.get_usim()
 
 
 
