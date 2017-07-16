@@ -54,23 +54,6 @@ class Reader():
 	else:
 	    print("[Reader] ICCID: Can't read, response code = %s" % (sw,))
 
-    def get_pl(self):
-        """
-        Preferred  Languages
-
-        This EF contains the codes for up to n languages. 
-        This information, determined by the user/operator, 
-        defines the preferred languages of the user, 
-        for the UICC, in order of priority. 
-        """
-	# EF.PL
-	(res, sw) = self.scc.read_binary(['3f00', '2f05'])
-        print ("res:", res)
-	if sw == '9000':
-	    print("[Reader] PL: %s" % (dec_iccid(res),))
-	else:
-	    print("[Reader] PL: Can't read, response code = %s" % (sw,))
-
     def get_imsi(self):
 	# EF.IMSI
 	(res, sw) = self.scc.read_binary(['3f00', '7f20', '6f07'])
@@ -124,6 +107,59 @@ class Reader():
 	except:
 	    print "[Reader] UID: Can't read. Probably not existing file"
 
+    def get_pl(self):
+        """
+        Preferred  Languages
+
+        This EF contains the codes for up to n languages. 
+        This information, determined by the user/operator, 
+        defines the preferred languages of the user, 
+        for the UICC, in order of priority. 
+        """
+	# EF.PL
+	(res, sw) = self.scc.read_binary(['3f00', '2f05'])
+	if sw == '9000':
+	    print("[Reader] PL: %s" % (dec_iccid(res),))
+	else:
+	    print("[Reader] PL: Can't read, response code = %s" % (sw,))
+
+    # FIXME - it crashes
+    def get_arr(self):
+        """
+        Access  Rule  Reference 
+
+        Access rules may be shared between files in the UICC by referencing. 
+        This is accomplished by storing the security attributes in the EF ARR file under the MF.
+
+        The second possibility allows the usage of different access rules in different security environments. 
+        """
+	# EF.ARR
+	(res, sw) = self.scc.read_binary(['3f00', '2fe6'])
+	if sw == '9000':
+	    print("[Reader] ARR: %s" % (dec_iccid(res),))
+	else:
+	    print("[Reader] ARR: Can't read, response code = %s" % (sw,))
+
+
+    # FIXME - cant read
+    def get_dir(self):
+        """
+        Application  DIRectory 
+
+        EF DIR is a linear fixed file under the MF and is under the responsibility of the issuer. 
+        
+        All applications are uniquely identified by application identifiers (AID) that are obtained from EF DIR. 
+        
+        These application identifiers are used to select the application. 
+        """
+	# EF.DIR
+	(res, sw) = self.scc.read_binary(['3f00', '2f00'])
+	if sw == '9000':
+	    print("[Reader] DIR: %s" % (dec_iccid(res),))
+	else:
+	    print("[Reader] DIR: Can't read, response code = %s" % (sw,))
+
+
 
 if __name__ == '__main__':
     device="/dev/ttyUSB0"
@@ -136,8 +172,9 @@ if __name__ == '__main__':
     # reader.get_acc()
     # reader.get_msisdn()
     # reader.get_uid()
-
-    reader.get_pl()
+    # reader.get_pl()
+    # reader.get_arr()
+    reader.get_dir()
 
 
 
