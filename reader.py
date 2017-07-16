@@ -47,48 +47,47 @@ class Reader():
 	# EF.ICCID
 	(res, sw) = self.scc.read_binary(['3f00', '2fe2'])
 	if sw == '9000':
-		print("[Reader] ICCID: %s" % (dec_iccid(res),))
+	    print("[Reader] ICCID: %s" % (dec_iccid(res),))
 	else:
-		print("[Reader] ICCID: Can't read, response code = %s" % (sw,))
+	    print("[Reader] ICCID: Can't read, response code = %s" % (sw,))
 
     def get_imsi(self):
 	# EF.IMSI
 	(res, sw) = self.scc.read_binary(['3f00', '7f20', '6f07'])
 	if sw == '9000':
-		print("[Reader] IMSI: %s" % (dec_imsi(res),))
+	    print("[Reader] IMSI: %s" % (dec_imsi(res),))
 	else:
-		print("[Reader] IMSI: Can't read, response code = %s" % (sw,))
+	    print("[Reader] IMSI: Can't read, response code = %s" % (sw,))
 
     def get_smsp(self):
 	# EF.SMSP
 	(res, sw) = self.scc.read_record(['3f00', '7f10', '6f42'], 1)
 	if sw == '9000':
-		print("[Reader] SMSP: %s" % (res,))
+	    print("[Reader] SMSP: %s" % (res,))
 	else:
-		print("[Reader] SMSP: Can't read, response code = %s" % (sw,))
+	    print("[Reader] SMSP: Can't read, response code = %s" % (sw,))
 
     def get_acc(self):
 	# EF.ACC
 	(res, sw) = self.scc.read_binary(['3f00', '7f20', '6f78'])
 	if sw == '9000':
-		print("[Reader] ACC: %s" % (res,))
+	    print("[Reader] ACC: %s" % (res,))
 	else:
-		print("[Reader] ACC: Can't read, response code = %s" % (sw,))
+	    print("[Reader] ACC: Can't read, response code = %s" % (sw,))
 
     def get_msisdn(self):
 	# EF.MSISDN
 	try:
-	#	print(scc.record_size(['3f00', '7f10', '6f40']))
-		(res, sw) = self.scc.read_record(['3f00', '7f10', '6f40'], 1)
-		if sw == '9000':
-			if res[1] != 'f':
-				print("[Reader] MSISDN: %s" % (res,))
-			else:
-				print("[Reader] MSISDN: Not available")
+	    (res, sw) = self.scc.read_record(['3f00', '7f10', '6f40'], 1)
+	    if sw == '9000':
+		if res[1] != 'f':
+		    print("[Reader] MSISDN: %s" % (res,))
 		else:
-			print("[Reader] MSISDN: Can't read, response code = %s" % (sw,))
+		    print("[Reader] MSISDN: Not available")
+	    else:
+		print("[Reader] MSISDN: Can't read, response code = %s" % (sw,))
 	except:
-		print "[Reader] MSISDN: Can't read. Probably not existing file"
+	    print "[Reader] MSISDN: Can't read. Probably not existing file"
 
 
 if __name__ == '__main__':
