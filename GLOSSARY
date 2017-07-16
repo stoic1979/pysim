@@ -1,12 +1,24 @@
-ICCID 
+Abbreviations and Notation
 
-Integrated Circuit Card Identifier.
-A SIM card contains its unique serial number (ICCID). 
-ICCIDs are stored in the SIM cards and are also printed on the SIM card during a personalisation process.
-
-
-MCC 
-Mobile Country Code
-
-MNC
-Mobile Network Code
+APDU	Application protocol data unit
+ATR	Answer to reset
+BER	Basic encoding rules of ASN.1 (see annex D)
+CLA	Class byte
+DIR	Directory
+DF	Dedicated file
+EF	Elementary file
+FCI	File control information
+FCP	File control parameter
+FMD	File management data
+ICCID   Integrated Circuit Card Identifier.
+INS	Instruction byte
+MCC     Mobile Country Code
+MNC     Mobile Network Code
+MF	Instruction byte
+P1-P2	Parameter bytes
+PTS	Protocol type selection
+RFU	Reserved for future use
+SM	Secure messaging
+SW1-SW2	Status bytes
+TLV	Tag length value
+TPDU	Transmission protocol data unit

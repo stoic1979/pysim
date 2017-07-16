@@ -31,6 +31,8 @@ class Reader():
     """
 
     def __init__(self, device, baudrate):
+
+        # create trasnport
 	sl = SerialSimLink(device=device, baudrate=baudrate)
 
         # create command layer
@@ -40,16 +42,34 @@ class Reader():
         print("[Reader] Waiting for SIM card ...")
         sl.wait_for_card()
 
-        # Program the card
+        # program the card
         print("[Reader] Reading SIM card ...")
 
     def get_iccid(self):
 	# EF.ICCID
 	(res, sw) = self.scc.read_binary(['3f00', '2fe2'])
+        print ("res:", res)
 	if sw == '9000':
 	    print("[Reader] ICCID: %s" % (dec_iccid(res),))
 	else:
 	    print("[Reader] ICCID: Can't read, response code = %s" % (sw,))
+
+    def get_pl(self):
+        """
+        Preferred  Languages
+
+        This EF contains the codes for up to n languages. 
+        This information, determined by the user/operator, 
+        defines the preferred languages of the user, 
+        for the UICC, in order of priority. 
+        """
+	# EF.PL
+	(res, sw) = self.scc.read_binary(['3f00', '2f05'])
+        print ("res:", res)
+	if sw == '9000':
+	    print("[Reader] PL: %s" % (dec_iccid(res),))
+	else:
+	    print("[Reader] PL: Can't read, response code = %s" % (sw,))
 
     def get_imsi(self):
 	# EF.IMSI
@@ -90,15 +110,34 @@ class Reader():
 	    print "[Reader] MSISDN: Can't read. Probably not existing file"
 
 
+    # FIXME
+    def get_uid(self):
+	try:
+	    (res, sw) = self.scc.read_record(['ca00', '0000'], 1)
+	    if sw == '9000':
+		if res[1] != 'f':
+		    print("[Reader] UID: %s" % (res,))
+		else:
+		    print("[Reader] UID: Not available")
+	    else:
+		print("[Reader] UID: Can't read, response code = %s" % (sw,))
+	except:
+	    print "[Reader] UID: Can't read. Probably not existing file"
+
+
 if __name__ == '__main__':
     device="/dev/ttyUSB0"
     baudrate = 9600
     reader = Reader(device, baudrate)
-    reader.get_iccid()
-    reader.get_imsi()
-    reader.get_smsp()
-    reader.get_acc()
-    reader.get_msisdn()
+
+    # reader.get_iccid()
+    # reader.get_imsi()
+    # reader.get_smsp()
+    # reader.get_acc()
+    # reader.get_msisdn()
+    # reader.get_uid()
+
+    reader.get_pl()
 
 
 
