@@ -1,0 +1,12 @@
+ICCID 
+
+Integrated Circuit Card Identifier.
+A SIM card contains its unique serial number (ICCID). 
+ICCIDs are stored in the SIM cards and are also printed on the SIM card during a personalisation process.
+
+
+MCC 
+Mobile Country Code
+
+MNC
+Mobile Network Code
