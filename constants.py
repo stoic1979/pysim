@@ -2,6 +2,9 @@
 # Constants
 #
 
+# References
+# http://www.cardwerk.com/smartcards/smartcard_standard_ISO7816-4_5_basic_organizations.aspx
+# http://www.tech-invite.com/fo-uicc/tinv-fo-uicc-mf.html
 
 ###################################################################
 #                                                                 #
@@ -12,6 +15,15 @@
 ###################################################################
 MF = '3F00'
 
+###################################################################
+#                                                                 #
+# International  Mobile  Subscriber  Identity                     #
+#                                                                 #
+# EF of IMSI is defined inside DF of GSM                          #
+#                                                                 #
+###################################################################
+EF_IMSI = '6F07'
+
 DF_TELECOM     = '7F10'
 DF_GSM         = '7F20'
 EF_ADN         = '6F3A'
@@ -20,7 +32,6 @@ EF_FDN         = '6F3B'
 EF_LND         = '6F44'
 EF_SPN         = '6F46'
 EF_MSISDN      = '6F40'
-
 
 
 SCARD_PROTOCOL_T0   = 1
