@@ -22,7 +22,7 @@
 
 from pySim.commands import SimCardCommands
 from pySim.transport.serial import SerialSimLink
-from pySim.utils import h2b, swap_nibbles, rpad, dec_imsi, dec_iccid
+from pySim.utils import *
 
 from constants import *
 
@@ -54,14 +54,6 @@ class Reader():
 	    print("[Reader] ICCID: %s" % (dec_iccid(res),))
 	else:
 	    print("[Reader] ICCID: Can't read, response code = %s" % (sw,))
-
-    def get_imsi(self):
-	# EF.IMSI
-	(res, sw) = self.scc.read_binary([MF, '7f20', '6f07'])
-	if sw == '9000':
-	    print("[Reader] IMSI: %s" % (dec_imsi(res),))
-	else:
-	    print("[Reader] IMSI: Can't read, response code = %s" % (sw,))
 
     def get_smsp(self):
 	# EF.SMSP
@@ -176,23 +168,52 @@ class Reader():
 	    print("[Reader] USIM: Can't read, response code = %s" % (sw,))
 
 
+    def get_telecom(self):
+        """
+        
+        """
+	# EF.TELECOM
+	r = self.scc.select_file([MF, DF_TELECOM, EF_ADN])
+        print "r:", r
+
+    
+    def get_imsi(self):
+	# EF.IMSI
+	(res, sw) = self.scc.read_binary([MF, DF_GSM, EF_IMSI])
+	if sw == '9000':
+	    print("[Reader] IMSI: %s" % (dec_imsi(res),))
+	else:
+	    print("[Reader] IMSI: Can't read, response code = %s" % (sw,))
+
+    def get_plmn(self):
+	# EF.PLMN
+	(res, sw) = self.scc.read_binary([MF, DF_GSM, '6F30'])
+        print ("res: ", res)
+	if sw == '9000':
+	    print("[Reader] PLMN: %s" % (dec_plmn(res),))
+	else:
+	    print("[Reader] PLMN: Can't read, response code = %s" % (sw,))
+
+
 
 if __name__ == '__main__':
     device="/dev/ttyUSB0"
     baudrate = 9600
     reader = Reader(device, baudrate)
 
-    reader.get_iccid()
-    reader.get_imsi()
-    reader.get_smsp()
-    reader.get_acc()
-    reader.get_msisdn()
+    # reader.get_iccid()
+    # reader.get_smsp()
+    # reader.get_acc()
+    # reader.get_msisdn()
     # reader.get_uid()
     # reader.get_pl()
     # reader.get_arr()
     # reader.get_dir()
+    # reader.get_usim()
+    # reader.get_telecom()
 
-    #reader.get_usim()
+    # reader.get_imsi()
+    reader.get_plmn()
 
 
 
