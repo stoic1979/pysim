@@ -1,2 +1,5 @@
 *.pyc
 .*.swp
+
+# ignore pycharm files
+.idea
