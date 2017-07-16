@@ -6,6 +6,7 @@
 # http://www.cardwerk.com/smartcards/smartcard_standard_ISO7816-4_5_basic_organizations.aspx
 # http://www.tech-invite.com/fo-uicc/tinv-fo-uicc-mf.html
 
+
 ###################################################################
 #                                                                 #
 # Master File                                                     #
@@ -14,6 +15,7 @@
 #                                                                 #
 ###################################################################
 MF = '3F00'
+
 
 ###################################################################
 #                                                                 #
@@ -24,14 +26,26 @@ MF = '3F00'
 ###################################################################
 EF_IMSI = '6F07'
 
+
+###################################################################
+#                                                                 #
+# MSISDN is a number uniquely identifying a subscription in a GSM #
+# or a UMTS mobile network                                        #
+#                                                                 #
+# EF of MSISDN is defined inside DF of TELECOM                    #
+#                                                                 #
+###################################################################
+EF_MSISDN = '6F40'
+
 DF_TELECOM     = '7F10'
+
 DF_GSM         = '7F20'
 EF_ADN         = '6F3A'
 EF_SMS         = '6F3C'
 EF_FDN         = '6F3B'
 EF_LND         = '6F44'
 EF_SPN         = '6F46'
-EF_MSISDN      = '6F40'
+
 
 
 SCARD_PROTOCOL_T0   = 1

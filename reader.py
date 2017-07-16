@@ -74,7 +74,7 @@ class Reader():
     def get_msisdn(self):
 	# EF.MSISDN
 	try:
-	    (res, sw) = self.scc.read_record([MF, '7f10', '6f40'], 1)
+	    (res, sw) = self.scc.read_record([MF, DF_TELECOM, EF_MSISDN], 1)
 	    if sw == '9000':
 		if res[1] != 'f':
 		    print("[Reader] MSISDN: %s" % (res,))
@@ -204,7 +204,7 @@ if __name__ == '__main__':
     # reader.get_iccid()
     # reader.get_smsp()
     # reader.get_acc()
-    # reader.get_msisdn()
+    reader.get_msisdn()
     # reader.get_uid()
     # reader.get_pl()
     # reader.get_arr()
@@ -213,7 +213,7 @@ if __name__ == '__main__':
     # reader.get_telecom()
 
     # reader.get_imsi()
-    reader.get_plmn()
+    # reader.get_plmn()
 
 
 
