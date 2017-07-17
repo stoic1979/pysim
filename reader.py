@@ -252,16 +252,17 @@ class Reader():
 
         apdu = "A0B2%s04" + IntToHex(rec_len)
         hexNameLen = name_len << 1
-        for i in range(1, num_recs + 1):
-            data, sw = self.sl.send_apdu_raw(apdu % IntToHex(i))
-            self.send_apdu_list( [apdu % IntToHex(i)] )
 
-            print ("In: %s" % apdu)
-            print "SW:", sw
-            print "OUT:", data
-            print
+        try:
+            for i in range(1, num_recs + 1):
+                data, sw = self.sl.send_apdu_raw(apdu % IntToHex(i))
+                self.send_apdu_list( [apdu % IntToHex(i)] )
 
-            try:
+                print ("In: %s" % apdu)
+                print "SW:", sw
+                print "OUT:", data
+                print
+
                 if data[0:2] != 'FF':
                     name = GSM3_38ToASCII(unhexlify(data[:hexNameLen]))
                     if ord(name[-1]) > 0x80:
@@ -279,8 +280,8 @@ class Reader():
                     print "Name: ", name
                     print "Number: ", number
                     phone_lst.append((name, number))
-            except Exception as exp:
-                print "get_phonebook() got exception :: %s, i=%d" % (exp, i)
+        except Exception as exp:
+            print "get_phonebook() got exception :: %s, i=%d" % (exp, i)
 
         return phone_lst
 
