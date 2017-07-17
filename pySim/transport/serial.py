@@ -47,6 +47,64 @@ class SerialSimLink(LinkBase):
 		self._rst_pin = rst
 		self._debug = debug
 
+
+                #self._open_session()
+        
+        # not used at the moment
+        # navi added this method for testing
+        def _open_session(self):
+            print ("Opening Session")
+
+            self.serialport = self._sl
+
+            self.serialport.setRTS(1)
+            self.serialport.setDTR(1)
+            time.sleep(0.01)  # 10ms?
+            self.serialport.flushInput()
+            #self.serialport.setRTS(1)
+            self.serialport.setRTS(0)
+            self.serialport.setDTR(0)
+
+            ts = self.serialport.read()
+            if ts == None:
+                return 2             # no card?
+            if ord(ts) != 0x3B:
+                return 3             # bad ATR byte 
+            # ok got 0x3B
+            print "TS: 0x%x Direct convention" % ord(ts)
+
+            t0 = chr(0x3B)
+            while ord(t0) == 0x3b:
+                t0 = self.serialport.read()
+
+            if t0 == None:
+                return 2
+            print "T0: 0x%x" % ord(t0)
+
+            # read interface bytes
+            if (ord(t0) & 0x10):
+                print "TAi = %x" % ord(self.serialport.read())
+            if (ord(t0) & 0x20):
+                print "TBi = %x" % ord(self.serialport.read())
+            if (ord(t0) & 0x40):
+                print "TCi = %x" % ord(self.serialport.read())
+            if (ord(t0) & 0x80):
+                tdi = self.serialport.read()
+                print "TDi = %x" % ord(tdi)
+
+            for i in range(0, ord(t0) & 0xF):
+                x = self.serialport.read()
+                print "Historical: %x" % ord(x)
+
+            while 1:
+                x = self.serialport.read()
+                if (x == ""):
+                    break
+                print "read: %x" % ord(x)
+               
+            return 0
+
+
 	def __del__(self):
 		self._sl.close()
 
