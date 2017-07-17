@@ -25,6 +25,9 @@ from pySim.transport.serial import SerialSimLink
 from pySim.utils import *
 
 from constants import *
+from utils import *
+
+from binascii import hexlify, unhexlify
 
 
 class Reader():
@@ -35,14 +38,14 @@ class Reader():
     def __init__(self, device, baudrate):
 
         # create trasnport
-	sl = SerialSimLink(device=device, baudrate=baudrate)
+	self.sl = SerialSimLink(device=device, baudrate=baudrate)
 
         # create command layer
-        self.scc = SimCardCommands(transport=sl)
+        self.scc = SimCardCommands(transport=self.sl)
 
         # wait for SIM card
         print("[Reader] Waiting for SIM card ...")
-        sl.wait_for_card()
+        self.sl.wait_for_card()
 
         # program the card
         print("[Reader] Reading SIM card ...")
@@ -209,6 +212,78 @@ class Reader():
 	else:
 	    print("[Reader] Phase: Can't read, response code = %s" % (sw,))
 
+    def send_apdu_list(self, lst):
+        for apdu in lst:
+            print ("In: %s" % apdu)
+            out, sw = self.sl.send_apdu_raw(apdu)
+            print "SW:", sw
+            print "OUT:", out
+            print
+
+    def send_apdu_list_prefixed(self, lst):
+        lst = ["A0A4000002" + l for l in lst]
+        print ("Prefixed list: %s" % lst)
+        self.send_apdu_list(lst)
+
+    def connect_to_sim(self):
+        connect_sim_apdu_lst = ['A0A40000023F00', 'A0F200000D', 'A0F2000016']
+        print ("Connecting to SIM...")
+        ret = self.send_apdu_list(connect_sim_apdu_lst)
+        print ("Connected")
+        print
+
+    def get_phonebook(self):
+
+        phone_lst = []
+
+        print ("Selecting file")
+        self.send_apdu_list_prefixed(['3F00', '7F10', '6F3A'])
+
+        data, sw = self.sl.send_apdu_raw("A0C000000F")
+
+        rec_len  = int(data[28:30], 16) # Usually 0x20
+
+        # Now we can work out the name length & number of records
+        name_len = rec_len - 14 # Defined GSM 11.11
+        num_recs = int(data[4:8], 16) / rec_len
+
+        print ("rec_len: %d, name_len: %d, num_recs: %d" % (rec_len, name_len, num_recs))
+
+
+        apdu = "A0B2%s04" + IntToHex(rec_len)
+        hexNameLen = name_len << 1
+        for i in range(1, num_recs + 1):
+            data, sw = self.sl.send_apdu_raw(apdu % IntToHex(i))
+            self.send_apdu_list( [apdu % IntToHex(i)] )
+
+            print ("In: %s" % apdu)
+            print "SW:", sw
+            print "OUT:", data
+            print
+
+            try:
+                if data[0:2] != 'FF':
+                    name = GSM3_38ToASCII(unhexlify(data[:hexNameLen]))
+                    if ord(name[-1]) > 0x80:
+                        # Nokia phones add this as a group identifier. Remove it.
+                        name = name[:-1].rstrip()
+                    number = ""
+
+                    numberLen = int(data[hexNameLen:hexNameLen+2], 16)
+                    if numberLen > 0 and numberLen <= (11): # Includes TON/NPI byte
+                        hexNumber = data[hexNameLen+2:hexNameLen+2+(numberLen<<1)]
+                        if hexNumber[:2] == '91':
+                            number = "+"
+                        number += GSMPhoneNumberToString(hexNumber[2:])
+                    #self.itemDataMap[i] = (name, number)
+                    print "Name: ", name
+                    print "Number: ", number
+                    phone_lst.append((name, number))
+            except Exception as exp:
+                print "get_phonebook() got exception :: %s, i=%d" % (exp, i)
+
+        return phone_lst
+
 
 
 if __name__ == '__main__':
@@ -230,7 +305,8 @@ if __name__ == '__main__':
     # reader.get_imsi()
     # reader.get_plmn()
 
-    reader.get_phase()
+    # reader.get_phase()
+    print reader.get_phonebook()
 
 
 
