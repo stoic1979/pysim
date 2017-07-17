@@ -29,6 +29,9 @@ from utils import *
 
 from binascii import hexlify, unhexlify
 
+from sms import SMSmessage
+import traceback
+
 
 class Reader():
     """
@@ -250,18 +253,18 @@ class Reader():
         print ("rec_len: %d, name_len: %d, num_recs: %d" % (rec_len, name_len, num_recs))
 
 
-        apdu = "A0B2%s04" + IntToHex(rec_len)
+        apdu_str = "A0B2%s04" + IntToHex(rec_len)
         hexNameLen = name_len << 1
 
         try:
             for i in range(1, num_recs + 1):
-                data, sw = self.sl.send_apdu_raw(apdu % IntToHex(i))
-                self.send_apdu_list( [apdu % IntToHex(i)] )
+                apdu = apdu_str % IntToHex(i)
+                data, sw = self.sl.send_apdu_raw(apdu)
 
+                print ("Contact #%d" % i)
                 print ("In: %s" % apdu)
                 print "SW:", sw
                 print "OUT:", data
-                print
 
                 if data[0:2] != 'FF':
                     name = GSM3_38ToASCII(unhexlify(data[:hexNameLen]))
@@ -280,10 +283,57 @@ class Reader():
                     print "Name: ", name
                     print "Number: ", number
                     phone_lst.append((name, number))
+
+                print
         except Exception as exp:
-            print "get_phonebook() got exception :: %s, i=%d" % (exp, i)
+            print "\n\nget_phonebook() got exception :: %s\n\n" % exp
 
         return phone_lst
+
+    def get_sms(self):
+
+        sms_lst = []
+
+        print ("Selecting SMS file")
+        self.send_apdu_list_prefixed(['3F00', '7F10', '6F3C'])
+
+        data, sw = self.sl.send_apdu_raw("A0C000000F")
+
+        rec_len = int(data[28:30], 16) # Should be 0xB0 (176)
+        num_recs = int(data[4:8], 16) / rec_len
+
+        print ("rec_len: %d, num_recs: %d" % (rec_len, num_recs))
+
+        apdu_str = "A0B2%s04" + IntToHex(rec_len)
+
+        try:
+            for i in range(1, num_recs + 1):
+                apdu = apdu_str % IntToHex(i)
+                data, sw = self.sl.send_apdu_raw(apdu)
+
+                print ("SMS #%d" % i)
+                print ("In: %s" % apdu)
+                print "SW:", sw
+                print "OUT:", data
+                print
+
+                # See if SMS record is used
+                status = int(data[0:2], 16)
+                if status & 1 or data[2:4] != 'FF':
+                    try:
+                        sms = SMSmessage()
+                        sms.smsFromData(data)
+                        sms_lst.append( (sms.status, sms.timestamp, sms.number, sms.message) )
+                    except Exception as exp:
+                        pass
+                        #print "\n\nget_sms() got exception: %s\n while fetching SMS from data, for SMS #%d\n\n" % (exp, i)
+                        #print traceback.format_exc()
+        except Exception as exp:
+            print "\n\nget_sms() got exception :: %s\n\n" % exp
+            print traceback.format_exc()
+
+        return sms_lst
+
 
 
 
@@ -307,7 +357,8 @@ if __name__ == '__main__':
     # reader.get_plmn()
 
     # reader.get_phase()
-    print reader.get_phonebook()
+    #print reader.get_phonebook()
+    print reader.get_sms()
 
 
 
