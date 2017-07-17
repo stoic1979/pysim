@@ -195,6 +195,21 @@ class Reader():
 	    print("[Reader] PLMN: Can't read, response code = %s" % (sw,))
 
 
+    def get_phase(self):
+	(res, sw) = self.scc.read_binary(["3F00", "7F20", "6FAE"])
+	if sw == '9000':
+            if res == "00":
+                phase = 'Phase 1'
+            elif res == "01":
+                phase = 'Phase 2'
+            else:
+                phase = 'Phase 2+'
+
+	    print("[Reader] Phase: %s" % phase)
+	else:
+	    print("[Reader] Phase: Can't read, response code = %s" % (sw,))
+
+
 
 if __name__ == '__main__':
     device="/dev/ttyUSB0"
@@ -204,7 +219,7 @@ if __name__ == '__main__':
     # reader.get_iccid()
     # reader.get_smsp()
     # reader.get_acc()
-    reader.get_msisdn()
+    # reader.get_msisdn()
     # reader.get_uid()
     # reader.get_pl()
     # reader.get_arr()
@@ -214,6 +229,8 @@ if __name__ == '__main__':
 
     # reader.get_imsi()
     # reader.get_plmn()
+
+    reader.get_phase()
 
 
 
