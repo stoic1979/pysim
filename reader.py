@@ -334,6 +334,10 @@ class Reader():
 
         return sms_lst
 
+    def list_applets(self):
+        apdu = "80f21000024f0000c0000000"
+        self.send_apdu_list([apdu])
+
 
 
 
@@ -358,7 +362,8 @@ if __name__ == '__main__':
 
     # reader.get_phase()
     #print reader.get_phonebook()
-    print reader.get_sms()
+    #print reader.get_sms()
+    reader.list_applets()
 
 
 
