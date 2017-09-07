@@ -353,7 +353,7 @@ if __name__ == '__main__':
     # reader.get_uid()
     # reader.get_pl()
     # reader.get_arr()
-    # reader.get_dir()
+    reader.get_dir()
     # reader.get_usim()
     # reader.get_telecom()
 
