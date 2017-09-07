@@ -50,6 +50,14 @@ class RsSIMReader():
 	else:
 	    print("[INFO] ICCID: Can't read, response code = %s" % (sw,))
 
+    def get_pl(self):
+	# EF.PL
+	(res, sw) = self.scc.read_binary([MF, '2f05'])
+	if sw == '9000':
+	    print("[INFO] PL: %s" % (dec_iccid(res),))
+	else:
+	    print("[INFO] PL: Can't read, response code = %s" % (sw,))
+
     def get_imsi(self):
 	# EF.IMSI
 	(res, sw) = self.scc.read_binary([MF, DF_GSM, EF_IMSI])
@@ -98,6 +106,7 @@ if __name__ == '__main__':
     sim = RsSIMReader(device, baudrate)
     # sim.get_iccid()
     sim.get_imsi()
+    sim.get_pl()
 
     try_except(sim.get_global_pin, "[GET-GLOBAL0-PIN]")
 
