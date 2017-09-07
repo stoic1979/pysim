@@ -54,7 +54,7 @@ class RsSIMReader():
 	# EF.PL
 	(res, sw) = self.scc.read_binary([MF, '2f05'])
 	if sw == '9000':
-	    print("[INFO] PL: %s" % (dec_iccid(res),))
+	    print("[INFO] PL: %s" % (res,))
 	else:
 	    print("[INFO] PL: Can't read, response code = %s" % (sw,))
 
@@ -85,10 +85,31 @@ class RsSIMReader():
     def get_native_apps(self):
         print ("[INFO] :: getting native apps")
         path = ['3F00', '2207']
-        rec_cnt = 6
 
 	num_records = self.scc.record_count(path)
 	print ("Native Applications: %d records available" % num_records)
+	for record_id in range(1, num_records + 1):
+		print self.scc.read_record(path, record_id)
+
+        print
+
+    def get_arr_mf(self):
+        print ("[INFO] :: getting ARR MF")
+        path = ['3F00', '2f06']
+
+	num_records = self.scc.record_count(path)
+	print ("ARR MF: %d records available" % num_records)
+	for record_id in range(1, num_records + 1):
+		print self.scc.read_record(path, record_id)
+
+        print
+
+    def get_arr_telecom(self):
+        print ("[INFO] :: getting ARR TELECOM")
+        path = ['3F00', '7f10', '6f06']
+
+	num_records = self.scc.record_count(path)
+	print ("ARR TELECOM: %d records available" % num_records)
 	for record_id in range(1, num_records + 1):
 		print self.scc.read_record(path, record_id)
 
@@ -109,8 +130,9 @@ if __name__ == '__main__':
     sim.get_pl()
 
     try_except(sim.get_global_pin, "[GET-GLOBAL0-PIN]")
-
     try_except(sim.get_native_apps, "[GET-NATIVE-APPS]")
+    try_except(sim.get_arr_mf,      "[GET-ARR-MF]")
+    try_except(sim.get_arr_telecom, "[GET-ARR-TELECOM]")
 
 
 
