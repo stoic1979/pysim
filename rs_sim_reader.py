@@ -10,6 +10,17 @@ from binascii import hexlify, unhexlify
 from sms import SMSmessage
 import traceback
 
+"""
+References:
+
+Universal Integrated Circuit Card (UICC) File Structure
+http://www.tech-invite.com/fo-uicc/tinv-fo-uicc-mf.html
+
+Conformance Testing
+http://www.3gpp.org/technologies/keywords-acronyms/108-conformance-testing-ue
+
+
+"""
 
 class RsSIMReader():
     """
@@ -25,19 +36,27 @@ class RsSIMReader():
         self.scc = SimCardCommands(transport=self.sl)
 
         # wait for SIM card
-        print("[Reader] Waiting for SIM card ...")
+        print("[INFO] Waiting for SIM card ...")
         self.sl.wait_for_card()
 
         # program the card
-        print("[Reader] Reading SIM card ...")
+        print("[INFO] Reading SIM card ...")
 
     def get_iccid(self):
 	# EF.ICCID
 	(res, sw) = self.scc.read_binary([MF, '2fe2'])
 	if sw == '9000':
-	    print("[Reader] ICCID: %s" % (dec_iccid(res),))
+	    print("[INFO] ICCID: %s" % (dec_iccid(res),))
 	else:
-	    print("[Reader] ICCID: Can't read, response code = %s" % (sw,))
+	    print("[INFO] ICCID: Can't read, response code = %s" % (sw,))
+
+    def get_imsi(self):
+	# EF.IMSI
+	(res, sw) = self.scc.read_binary([MF, DF_GSM, EF_IMSI])
+	if sw == '9000':
+	    print("[INFO] IMSI: %s" % (dec_imsi(res),))
+	else:
+	    print("[INFO] IMSI: Can't read, response code = %s" % (sw,))
 
 
     def list_applets(self):
@@ -71,7 +90,11 @@ if __name__ == '__main__':
     device="/dev/ttyUSB0"
     baudrate = 9600
     sim = RsSIMReader(device, baudrate)
-    sim.get_iccid()
+    # sim.get_iccid()
+    sim.get_imsi()
+
+    sim.get_global_pin()
+
     sim.get_native_apps()
 
 
