@@ -1,30 +1,6 @@
-#!/usr/bin/env python
-
-#
-# Phonebook to display contacts and SMS of a SIM card
-#
-#
-# Copyright (C) 2017  Navjot Singh <weavebytes@gmail.com>
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 2 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
-from pySim.commands import SimCardCommands
 from pySim.transport.serial import SerialSimLink
-from pySim.utils import *
+from utils import *
 
-from constants import *
 from utils import *
 
 from binascii import hexlify, unhexlify
@@ -39,9 +15,6 @@ class Phonebook():
 
         # create trasnport
 	self.sl = SerialSimLink(device=device, baudrate=baudrate)
-
-        # create command layer
-        self.scc = SimCardCommands(transport=self.sl)
 
         # wait for SIM card
         print("[Phonebook] Waiting for SIM card ...")
@@ -173,6 +146,11 @@ class Phonebook():
 if __name__ == '__main__':
     pb = Phonebook(device='/dev/ttyUSB0', baudrate=9600)
 
-    print pb.get_contacts()
-    print pb.get_sms()
+    contacts_lst = pb.get_contacts()
+    sms_lst = pb.get_sms()
+
+    print "-------------------------------------------------"
+    print "Contacts:", contacts_lst
+    print "SMS:", sms_lst
+    print "-------------------------------------------------"
 
