@@ -86,6 +86,12 @@ class RsSIMReader():
 
         print
 
+def try_except(fn, tag):
+    try:
+        fn()
+    except Exception as exp:
+        print "%s :: for exception %s" % (tag, exp)
+
 if __name__ == '__main__':
     device="/dev/ttyUSB0"
     baudrate = 9600
@@ -93,9 +99,9 @@ if __name__ == '__main__':
     # sim.get_iccid()
     sim.get_imsi()
 
-    sim.get_global_pin()
+    try_except(sim.get_global_pin, "[GET-GLOBAL0-PIN]")
 
-    sim.get_native_apps()
+    try_except(sim.get_native_apps, "[GET-NATIVE-APPS]")
 
 
 
