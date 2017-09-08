@@ -105,6 +105,12 @@ class RsSIMReader():
         print
 
     def get_arr_telecom(self):
+        """
+        Access rules may be shared between files in the UICC by referencing.
+        This is accomplished by storing the security attributes in the EF ARR file under the MF. 
+
+        The second possibility allows the usage of different access rules in different security environments. 
+        """
         print ("[INFO] :: getting ARR TELECOM")
         path = ['3F00', '7f10', '6f06']
 
@@ -115,26 +121,45 @@ class RsSIMReader():
 
         print
 
+    def get_df_phonebook(self):
+        print ("[INFO] :: getting DF PHONEBOOK")
+        path = ['3F00', '7f10', '5f3a']
+
+	num_records = self.scc.record_count(path)
+	print ("DF PHONEBOOK: %d records available" % num_records)
+	for record_id in range(1, num_records + 1):
+		print self.scc.read_record(path, record_id)
+
+        print
+
+    def get_df_toolkit(self):
+        print ("[INFO] :: getting DF TOOLKIT")
+        path = ['3F00', '7FDE']
+
+	num_records = self.scc.record_count(path)
+	print ("DF TOOLKIT: %d records available" % num_records)
+	for record_id in range(1, num_records + 1):
+		print self.scc.read_record(path, record_id)
+
+        print
+
 def try_except(fn, tag):
     try:
         fn()
     except Exception as exp:
-        print "%s :: for exception %s" % (tag, exp)
+        print "%s :: got exception %s" % (tag, exp)
 
 if __name__ == '__main__':
     device="/dev/ttyUSB0"
     baudrate = 9600
     sim = RsSIMReader(device, baudrate)
-    # sim.get_iccid()
+    sim.get_iccid()
     sim.get_imsi()
-    sim.get_pl()
+    try_except(sim.get_pl, "[GET-PL]")
 
     try_except(sim.get_global_pin, "[GET-GLOBAL0-PIN]")
     try_except(sim.get_native_apps, "[GET-NATIVE-APPS]")
     try_except(sim.get_arr_mf,      "[GET-ARR-MF]")
     try_except(sim.get_arr_telecom, "[GET-ARR-TELECOM]")
-
-
-
-
-
+    try_except(sim.get_df_phonebook, "[GET-DFF-PHONEBOOK]")
+    try_except(sim.get_df_toolkit, "[GET-DFF-TOOLKIT]")
