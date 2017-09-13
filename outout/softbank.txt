@@ -1,0 +1,44 @@
+[INFO] Waiting for SIM card ...
+[INFO] Reading SIM card ...
+[INFO] ICCID: 8981200510301427232
+[INFO] IMSI: 440201680230425
+[INFO] PL: 6a61656effffffffffffffffffffffffffffffff
+[INFO] :: getting global PIN
+[GET-GLOBAL0-PIN] :: got exception SW match failed ! Expected 9000 and got 9404.
+[INFO] :: getting native apps
+[GET-NATIVE-APPS] :: got exception SW match failed ! Expected 9000 and got 9404.
+[INFO] :: getting ARR MF
+ARR MF: 17 records available
+('80017f9700ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', '9000')
+('8001019000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', '9000')
+('800101900080011aa40683010a950108ffffffffffffffffffffffffffffffffffffffffffffffffffffffff', '9000')
+('8001019000800118a40683010a950108ffffffffffffffffffffffffffffffffffffffffffffffffffffffff', '9000')
+('8001019000800102a406830101950108800118a40683010a950108ffffffffffffffffffffffffffffffffff', '9000')
+('8001019000800102a40683010a950108ffffffffffffffffffffffffffffffffffffffffffffffffffffffff', '9000')
+('8001019000800112a40683010a950108ffffffffffffffffffffffffffffffffffffffffffffffffffffffff', '9000')
+('80011ba40683010a950108ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', '9000')
+('800111a40683010195010880010aa40683010a950108ffffffffffffffffffffffffffffffffffffffffffff', '9000')
+('800103a406830101950108800118a40683010a950108ffffffffffffffffffffffffffffffffffffffffffff', '9000')
+('800101a40683010195010880011aa40683010a950108ffffffffffffffffffffffffffffffffffffffffffff', '9000')
+('800101a406830101950108800102a406830181950108800118a40683010a950108ffffffffffffffffffffff', '9000')
+('800101a406830101950108800102a406830181950108840132a406830101950108800118a40683010a950108', '9000')
+('800113a406830101950108800108a40683010a950108ffffffffffffffffffffffffffffffffffffffffffff', '9000')
+('800103a40683010a950108ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', '9000')
+('840188a406830101950108ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', '9000')
+('8401889700ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', '9000')
+
+[INFO] :: getting ARR TELECOM
+ARR TELECOM: 8 records available
+('8001019000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff', '9000')
+('800103a406830101950108800118a406830181950108ffffffffffffffffffffff', '9000')
+('800103a406830101950108800118a40683010a950108ffffffffffffffffffffff', '9000')
+('80011ba40683010a950108ffffffffffffffffffffffffffffffffffffffffffff', '9000')
+('800101a406830101950108800102a406830181950108800118a40683010a950108', '9000')
+('800101a40683010195010880011aa40683010a950108ffffffffffffffffffffff', '9000')
+('800101a40683010195010880011aa406830181950108ffffffffffffffffffffff', '9000')
+('80017f9700ffffffffffffffffffffffffffffffffffffffffffffffffffffffff', '9000')
+
+[INFO] :: getting DF PHONEBOOK
+[GET-DFF-PHONEBOOK] :: got exception integer division or modulo by zero
+[INFO] :: getting DF TOOLKIT
+[GET-DFF-TOOLKIT] :: got exception SW match failed ! Expected 9000 and got 9404.

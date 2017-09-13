@@ -1,0 +1,17 @@
+[INFO] Waiting for SIM card ...
+[INFO] Reading SIM card ...
+[INFO] ICCID: 89918762110703459240
+[INFO] IMSI: 404870000345924
+[GET-PL] :: got exception SW match failed ! Expected 9000 and got 9404.
+[INFO] :: getting global PIN
+[GET-GLOBAL0-PIN] :: got exception SW match failed ! Expected 9000 and got 9404.
+[INFO] :: getting native apps
+[GET-NATIVE-APPS] :: got exception SW match failed ! Expected 9000 and got 9404.
+[INFO] :: getting ARR MF
+[GET-ARR-MF] :: got exception SW match failed ! Expected 9000 and got 9404.
+[INFO] :: getting ARR TELECOM
+[GET-ARR-TELECOM] :: got exception SW match failed ! Expected 9000 and got 9404.
+[INFO] :: getting DF PHONEBOOK
+[GET-DFF-PHONEBOOK] :: got exception SW match failed ! Expected 9000 and got 9404.
+[INFO] :: getting DF TOOLKIT
+[GET-DFF-TOOLKIT] :: got exception SW match failed ! Expected 9000 and got 9404.
