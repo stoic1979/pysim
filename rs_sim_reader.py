@@ -153,13 +153,13 @@ if __name__ == '__main__':
     device="/dev/ttyUSB0"
     baudrate = 9600
     sim = RsSIMReader(device, baudrate)
-    sim.get_iccid()
+    #sim.get_iccid()
     sim.get_imsi()
-    try_except(sim.get_pl, "[GET-PL]")
+    #try_except(sim.get_pl, "[GET-PL]")
 
-    try_except(sim.get_global_pin, "[GET-GLOBAL0-PIN]")
+    #try_except(sim.get_global_pin, "[GET-GLOBAL0-PIN]")
     try_except(sim.get_native_apps, "[GET-NATIVE-APPS]")
-    try_except(sim.get_arr_mf,      "[GET-ARR-MF]")
-    try_except(sim.get_arr_telecom, "[GET-ARR-TELECOM]")
-    try_except(sim.get_df_phonebook, "[GET-DFF-PHONEBOOK]")
-    try_except(sim.get_df_toolkit, "[GET-DFF-TOOLKIT]")
+    #try_except(sim.get_arr_mf,      "[GET-ARR-MF]")
+    #try_except(sim.get_arr_telecom, "[GET-ARR-TELECOM]")
+    #try_except(sim.get_df_phonebook, "[GET-DFF-PHONEBOOK]")
+    #try_except(sim.get_df_toolkit, "[GET-DFF-TOOLKIT]")
