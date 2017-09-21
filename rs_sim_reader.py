@@ -50,6 +50,40 @@ class RsSIMReader():
 	else:
 	    print("[INFO] ICCID: Can't read, response code = %s" % (sw,))
 
+    def get_msisdn(self):
+        print " --- get_msisdn --- "
+	# EF.MSISDN
+	try:
+	    (res, sw) = self.scc.read_record([MF, DF_TELECOM, EF_MSISDN], 1)
+            print "get_msisdn for sw", sw
+            print "get_msisdn for res", res
+	    if sw == '9000':
+		if res[1] != 'f':
+		    print("[INFO] MSISDN: %s" % (res,))
+		else:
+		    print("[INFO] MSISDN: Not available")
+	    else:
+		print("[INFO] MSISDN: Can't read, response code = %s" % (sw,))
+	except:
+	    print "[INFO] MSISDN: Can't read. Probably not existing file"
+
+    def get_opc(self):
+        print " --- get_opc --- "
+	# EF.MSISDN
+	try:
+	    (res, sw) = self.scc.read_binary([MF, '7F20', '00F7'])
+            print "get_opc for sw", sw
+            print "get_opc for res", res
+	    if sw == '9000':
+		if res[1] != 'f':
+		    print("[INFO] OPC: %s" % (res,))
+		else:
+		    print("[INFO] OPC: Not available")
+	    else:
+		print("[INFO] OPC: Can't read, response code = %s" % (sw,))
+	except:
+	    print "[INFO] MSISDN: Can't read. Probably not existing file"
+
     def get_pl(self):
 	# EF.PL
 	(res, sw) = self.scc.read_binary([MF, '2f05'])
@@ -143,6 +177,26 @@ class RsSIMReader():
 
         print
 
+    def get_ef_dir(self):
+        print ("[INFO] :: getting EF DIR")
+        path = ['3F00', '2F00']
+
+	num_records = self.scc.record_count(path)
+	print ("EF DIR: %d records available" % num_records)
+	for record_id in range(1, num_records + 1):
+		print self.scc.read_record(path, record_id)
+
+        print
+
+    def get_ef_atr(self):
+        print ("[INFO] :: getting EF ATR")
+        path = ['3F00', '2F01']
+
+	(res, sw) = self.scc.read_binary(path)
+        print "res", res
+        print "sw", sw
+
+
 def try_except(fn, tag):
     try:
         fn()
@@ -153,13 +207,16 @@ if __name__ == '__main__':
     device="/dev/ttyUSB0"
     baudrate = 9600
     sim = RsSIMReader(device, baudrate)
-    #sim.get_iccid()
-    sim.get_imsi()
-    #try_except(sim.get_pl, "[GET-PL]")
+    sim.get_iccid()
+    # sim.get_imsi()
+    # sim.get_opc()
+    # try_except(sim.get_pl, "[GET-PL]")
 
-    #try_except(sim.get_global_pin, "[GET-GLOBAL0-PIN]")
-    try_except(sim.get_native_apps, "[GET-NATIVE-APPS]")
-    #try_except(sim.get_arr_mf,      "[GET-ARR-MF]")
-    #try_except(sim.get_arr_telecom, "[GET-ARR-TELECOM]")
-    #try_except(sim.get_df_phonebook, "[GET-DFF-PHONEBOOK]")
-    #try_except(sim.get_df_toolkit, "[GET-DFF-TOOLKIT]")
+    # try_except(sim.get_global_pin, "[GET-GLOBAL0-PIN]")
+    # try_except(sim.get_native_apps, "[GET-NATIVE-APPS]")
+    # try_except(sim.get_arr_mf,      "[GET-ARR-MF]")
+    # try_except(sim.get_arr_telecom, "[GET-ARR-TELECOM]")
+    # try_except(sim.get_df_phonebook, "[GET-DFF-PHONEBOOK]")
+    # try_except(sim.get_df_toolkit, "[GET-DFF-TOOLKIT]")
+    try_except(sim.get_ef_dir, "[GET-EF-DIR]")
+    try_except(sim.get_ef_atr, "[GET-EF-ATR]")

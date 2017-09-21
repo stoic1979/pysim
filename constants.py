@@ -39,6 +39,7 @@ EF_MSISDN = '6F40'
 
 DF_TELECOM     = '7F10'
 DF_PHONEBOOK   = '5F3A'
+DF_GRAPHICS    = '5F50'
 
 DF_GSM         = '7F20'
 EF_ADN         = '6F3A'
